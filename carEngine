@@ -1,0 +1,31 @@
+class Car
+	
+	# Constructor de la clase
+	def initialize (engine)
+		@engine = engine
+		@noise ="BROOOOM"
+	end
+
+	def noise
+		puts @noise
+		puts @engine.noise
+	end
+end
+
+class Engine	
+
+	attr_reader :noise
+	# Constructor de la clase
+	def initialize (sound)
+		@noise = sound
+	end
+end
+
+
+motor1 = Engine.new "AAAA"
+motor2 = Engine.new "BBBB"
+
+coche1 = Car.new(motor1)
+coche1.noise
+coche2 = Car.new(motor2)
+coche2.noise
