@@ -1,31 +1,49 @@
-class Car
-	
-	# Constructor de la clase
-	def initialize (engine)
-		@engine = engine
-		@noise ="BROOOOM"
+
+class Bike
+
+	def initialize wheels, noise
+		@wheels = wheels
+		@noise = noise
 	end
 
 	def noise
-		puts @noise
-		puts @engine.noise
+		@noise
 	end
+
+	def count_wheels
+		@wheels	
+	end
+
 end
 
-class Engine	
-
-	attr_reader :noise
+class Car
+	
 	# Constructor de la clase
-	def initialize (sound)
-		@noise = sound
+	def initialize wheels, noise
+		@wheels = wheels
+		@noise = noise
+	end
+
+	def noise
+		@noise
+	end
+
+	def count_wheels	
+		@wheels
+	end
+
+end
+
+class WheelsCounter
+	def self.count_wheels vehicles
+		vehicles.reduce(0){|total_wheels, vehicle| total_wheels + vehicle.count_wheels}
 	end
 end
 
+coche1 = Car.new(4, "ruido1")
+coche2 = Car.new(4, "ruido2")
 
-motor1 = Engine.new "AAAA"
-motor2 = Engine.new "BBBB"
+bike1 = Bike.new(2, "ruidobici1")
+bike2 = Bike.new(2, "ruidobici2")
 
-coche1 = Car.new(motor1)
-coche1.noise
-coche2 = Car.new(motor2)
-coche2.noise
+puts WheelsCounter.count_wheels [coche1, coche2, bike1, bike2]
