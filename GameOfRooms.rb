@@ -1,55 +1,76 @@
 #require 'pry'
 
-=begin
+
 class Player
 
-	def initialize (maze)		
-		@lives = 5
-		@position = 0
+	attr_reader(:lives, :current_position)
 
-		# inicializamos el laberinto del jugador
-		#@maze_player =[]
-		#maze_player.each do |room|
-		#	@maze_player.push(room)
-		#end
+	def initialize maze	
+
+		@lives = 5
+		@current_position = 0
+		@maze = maze
 
 	end
 
-	def make_move door
+	def make_move? door
 
+		if @maze.is_the_door? @current_position, door
+			@current_position += 1
+			true
+		else
+			@lives -= 1
+			false
+		end
+			
+	end
+
+	def is_dead?
+		if @lives == 0
+			true
+		else
+			false
+		end
+	end
+
+	def is_the_exit?
+		
+		if @current_position == @maze.maze_length
+			true
+		else
+		    false
+		end
 	end
 
 end
-=end
 
 class Room
 
 	attr_reader(:north, :south, :east, :west)
-
 	# Constructor de la clase
-	def initialize (exit)
+	def initialize (exit1, exit2)
 							
 		@north = false
 		@south = false
 		@east = false
 		@west = false
-		@entry = ""
 
-		if exit == "north"
+		if exit1 == "north" || exit2 == "north"
 			@north = true
 		end
 
-		if exit == "south"
+		if exit1 == "south" || exit2 == "south"
 			@south = true
 		end
 
-		if exit == "east"
+		if exit1 == "east" || exit2 == "east"
 			@east = true
 		end
 
-		if exit == "west"
+		if exit1 == "west" || exit2 == "west"
 			@west = true
 		end
+
 	end
 
 	# Nos dice si la puerta es la salida
@@ -66,8 +87,6 @@ end
 
 class Maze
 
-	attr_reader :current_position
-
 	def initialize (maze)
 
 		# copiamos el array
@@ -75,57 +94,71 @@ class Maze
 		maze.each do |room|
 			@maze.push(room)
 		end
-		@current_position = 0
-
 	end
 
-	def is_the_door? door
+	def is_the_door? position, door
 		
-		if @maze[@current_position].is_the_exit_door? door
-
-		 	@current_position += 1
+		if @maze[position].is_the_exit_door? door
 			true
-
 		 else
 			false
 		end
 
 	end
 
-	def is_the_exit?
-
-		if @current_position == @maze.length
-			true
-		else
-		    false
-		end
+	def maze_length
+		@maze.length
 	end
+
 end
 
-
-room1 = Room.new("north")
-room2 = Room.new("south")
-room3 = Room.new("east")
-room4 = Room.new("west")
+room1 = Room.new("north","east")
+room2 = Room.new("south","east")
+room3 = Room.new("west","east")
+room4 = Room.new("north","east")
 
 array_maze = [room1, room2, room3, room4]
 
-# pry binding
-
 maze1 = Maze.new(array_maze)
 
-puts "Bienvenido al laberinto de 4 casillas"
-while !maze1.is_the_exit?
+jugador = Player.new(maze1)
 
-	puts "Tu posicion actual es #{maze1.current_position}"
+# Control de la pantalla
+
+puts "Bienvenido jugador al laberinto de 4 casillas"
+puts "Tienes 5 vidas para llegar al final"
+puts "Tu room actual es la #{jugador.current_position}"
+
+while !jugador.is_dead? && !jugador.is_the_exit? 
+
 	puts "Introduce salida: north | south | east | west "
 	salida = gets.chomp.to_s
-	if maze1.is_the_door? salida
-		puts "muy bien, has avanzado una posicion"
+
+	if jugador.make_move? salida
+
+		puts "--------------------------------------------------"
+		puts "MUY BIEN!!!!, has avanzado una room"
+		puts "Tu room actual es la #{jugador.current_position}"
+		puts "Todavia te quedan #{jugador.lives} vidas"
+		puts "--------------------------------------------------"
+
 	else
+		puts "--------------------------------------------------"
 		puts "Inténtalo de nuevo"
+		puts "Tu room actual es la #{jugador.current_position}"
+		puts "Te quedan #{jugador.lives} vidas"
+		puts "--------------------------------------------------"
 	end
 end
 
-puts "Enhorabuena!!! has acabado el laberinto"
+if jugador.is_dead?
+	puts "-----------------------------------------------------------------------"
+	puts "OHHHHHHHHHH!!! te has quedado sin vidas y no has terminado el laberinto"
+	puts "-----------------------------------------------------------------------"
+end
 
+if jugador.is_the_exit?
+	puts "------------------------------------------------------------"
+	puts "ENHORABUENA!!!! has terminado el laberinto"
+	puts "------------------------------------------------------------"
+end
