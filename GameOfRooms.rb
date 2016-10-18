@@ -9,7 +9,7 @@ class Player
 		@player_objects = []
 	end
 
-	# Realiza un movimiento y devuelve positivo si es jugador avanza 
+	# Realiza un movimiento y devuelve positivo si el jugador avanza 
 	def make_move? door
 		if @maze.is_the_door? @current_position, door
 			@current_position += 1
@@ -20,17 +20,17 @@ class Player
 		end
 	end
 
-	# elimina una vida 
-	def takes_a_life
-			@lives -= 1
-	end
-
 	# incluye un nuevo objeto al array de objetos del jugador
 	def put_object object
 		@player_objects.push(object)
 	end
 
-	# comprueba si al jugador todavia le quedan vidas
+	# elimina una vida 
+	def takes_a_life
+			@lives -= 1
+	end
+
+	# comprueba si al jugador todavia le quedan vidas	
 	def is_dead?
 		if @lives == 0
 			true
@@ -152,8 +152,6 @@ maze1 = Maze.new(array_maze)
 # creamos un jugador
 jugador = Player.new(maze1)
 
-
-
 # PANTALLA
 
 puts "----------------------------------------------------------------------------------"
@@ -184,11 +182,12 @@ while !jugador.is_dead? && !jugador.is_the_exit?
 		puts "MUY BIEN JUGADOR!!!, HAS SELECCIONADO UNA PUERTA CORRECTA"
 		puts "--------------------------------------------------------------------------"
 
+		# SI YA HA ENCONTRADO LA SALIDA NO SE MUESTRAN MAS MENSAJES HASTA LA SALIDA DEL WHILE
 		if !jugador.is_the_exit? 
 		
 				puts "HAS CONSEGUIDO AVANZAR A LA HABITACION DEL #{maze1.door_description jugador.current_position }"
 
-				# recorremos todos los objetos del jugador
+				# comprobamos si el jugador tiene el objeto necesario para la habitacion
 				existe = false
 				jugador.player_objects.each do |item|
 
@@ -200,10 +199,11 @@ while !jugador.is_dead? && !jugador.is_the_exit?
 				if existe
 					puts " Y GRACIAS A TU OBJETO: #{maze1.door_item_needed jugador.current_position}"
 					puts " HAS PODIDO PERMANECER CON VIDA"
-					# eliminamos item
+					
 				else
 					puts " PERO NO DISPONIAS DEL OBJETO: #{maze1.door_item_needed jugador.current_position} PARA SOBREVIVIR EN ESTA HABITACION"
 					puts " Y TE HA COSTADO UNA VIDA. LA PROXIMA VEZ SELECCIONA MEJOR TUS OBJETOS"
+					# le quitamos una vida
 					jugador.takes_a_life
 				end
 				puts "----------------------------------------------------------------------------------"
