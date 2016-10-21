@@ -1,9 +1,38 @@
 
 class PriceList
-	@@price_list = {"apple" => 10, "orange" => 5, "grapes" => 15, "banana" => 20,"watermelon" => 50 }
+
+	@@spring_price_list = {"apple" => 10, "orange" => 5, "grapes" => 15, "banana" => 20,"watermelon" => 50 }
+	@@summer_price_list = {"apple" => 10, "orange" => 2, "grapes" => 15, "banana" => 20,"watermelon" => 50 }
+	@@autumn_price_list = {"apple" => 15, "orange" => 5, "grapes" => 15, "banana" => 20,"watermelon" => 50 }
+	@@winter_price_list = {"apple" => 12, "orange" => 5, "grapes" => 15, "banana" => 21,"watermelon" => 50 }
+
 	def self.price_fruit fruit
-		@@price_list[fruit.to_s]	
+
+		if self.calculate_day == "sunday" && fruit.to_s == "watermelon"
+			price = 100
+			
+		elsif self.calculate_season == "spring"
+			@@spring_price_list[fruit.to_s]	
+
+		elsif self.calculate_season == "summer"
+			@@summer_price_list[fruit.to_s]	
+
+		elsif self.calculate_season == "autumn"
+			@@autumn_price_list[fruit.to_s]	
+
+		elsif self.calculate_season == "winter"
+			@@winter_price_list[fruit.to_s]	
+		end
 	end
+
+	def self.calculate_season
+		season = "autumn"
+	end
+
+	def self.calculate_day
+		day = "monday"
+	end
+
 end
 
 
@@ -117,6 +146,7 @@ cart.add_item_to_cart :grapes
 cart.add_item_to_cart :grapes
 cart.add_item_to_cart :grapes
 cart.add_item_to_cart :grapes
+cart.add_item_to_cart :watermelon
 
 cart.show
 cart.cost
