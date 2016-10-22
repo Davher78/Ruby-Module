@@ -342,7 +342,7 @@ end
 tablero = Board.new
 
 # leemos el fichero con el tablero
-new_board = ChessFile.read "./simple_board.txt"
+new_board = ChessFile.read "./complex_board.txt"
 
 # formateamos el tablero a la posicion inicial
 #tablero.format_board
@@ -357,10 +357,10 @@ tablero.print_board
 validador = ChessValidator.new(tablero)
 
 # leemos jugadas de fichero
-simple_moves = ChessFile.read "./simple_moves.txt"
+simple_moves = ChessFile.read "./complex_moves.txt"
 
 # creamos fichero de resultados
-simple_board = ChessFile.board "./simple_results.txt"
+simple_board = ChessFile.board "./complex_results.txt"
 
 # comprobamos las coordenadas del fichero
 simple_moves.each do |coordinate|
