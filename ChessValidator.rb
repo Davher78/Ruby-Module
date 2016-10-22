@@ -55,8 +55,7 @@ class Board
 	end
 
 	# leemos un tablero de fichero
-	def read_board
-		
+	def read_board	
 	end
 
 	# comprobamos que las coordenadas estan dentro de los limites del tablero
@@ -272,7 +271,11 @@ class Pawn < Piece
 		correspondencia = (((distancia == 1) && (colour == "w")) ||
 		((distancia == -1) && (colour == "b")))
 
-		(final && recto_fil && correspondencia)
+		# si esta en la posicion de salida puede mover 2 a la vez
+		posicion_salida_b = (origin_fil == 1) && (colour == "b") && (distancia == -2)
+		posicion_salida_w = (origin_fil == 6) && (colour == "w") && (distancia == 2)
+
+		(final && recto_fil && (correspondencia || posicion_salida_w || posicion_salida_b))
 
 	end
 end
@@ -308,27 +311,57 @@ class Transform
 		new_coordy = 8 - coordy.to_i
 	end
 end
+
+class ChessFile
+
+	def self.read chess_input_file
+		File.new(chess_input_file)
+	end
+
+	def self.board chess_output_file
+		File.open(chess_output_file, 'w')
+	end
+
+	def self.write board, content
+		board.puts content
+	end
+
+end
+
 # creamos un tablero
 tablero = Board.new
+
 # formateamos el tablero a la posicion inicial
 tablero.format_board
 tablero.print_board
+
 # creamos un validador de tablero
 validador = ChessValidator.new(tablero)
 
-# leemos las coordenadas del fichero
-file_coordinates = ["b8 a6","b8 c6"]
+# leemos jugadas de fichero
+simple_moves = ChessFile.read "./simple_moves.txt"
+
+# creamos fichero de resultados
+simple_board = ChessFile.board "./simple_board.txt"
 
 # comprobamos las coordenadas del fichero
-file_coordinates.each do |coordinate|
+simple_moves.each do |coordinate|
 
+	# transformamos a coordenadas internas
 	new_coordinate = Transform.coords coordinate
-	print new_coordinate
+	
+	# validamos las jugadas
+	result = "ILLEGAL"
+	if validador.move_valid? new_coordinate
+		result = "LEGAL"
+	end
 
-	# comprobamos si las coordenadas son validas en el tablero y escribimos en fichero	
-	puts validador.move_valid? new_coordinate
+	# mostramos por pantalla
+	puts "coordenada fichero: #{coordinate.chomp.to_s} --> #{new_coordinate} --> result:#{result}" 
 
-	# escribimos resultado en el fichero
+	# escribimos el resultado en el fichero
+	ChessFile.write simple_board, result
+
 
 end
 
