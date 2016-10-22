@@ -55,7 +55,17 @@ class Board
 	end
 
 	# leemos un tablero de fichero
-	def read_board	
+	def read_board new_board
+		fila = 0
+		new_board.each do |line|
+			columna = 0
+			columns = line.split(" ")
+			columns.each do |celd|
+				@board[fila][columna] = celd
+				columna += 1
+			end
+			fila += 1
+		end
 	end
 
 	# comprobamos que las coordenadas estan dentro de los limites del tablero
@@ -331,8 +341,16 @@ end
 # creamos un tablero
 tablero = Board.new
 
+# leemos el fichero con el tablero
+new_board = ChessFile.read "./simple_board.txt"
+
 # formateamos el tablero a la posicion inicial
-tablero.format_board
+#tablero.format_board
+
+# Cargamos el tablero del fichero
+tablero.read_board new_board
+
+# dibujamos en pantalla el tablero
 tablero.print_board
 
 # creamos un validador de tablero
@@ -342,7 +360,7 @@ validador = ChessValidator.new(tablero)
 simple_moves = ChessFile.read "./simple_moves.txt"
 
 # creamos fichero de resultados
-simple_board = ChessFile.board "./simple_board.txt"
+simple_board = ChessFile.board "./simple_results.txt"
 
 # comprobamos las coordenadas del fichero
 simple_moves.each do |coordinate|
